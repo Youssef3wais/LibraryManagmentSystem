@@ -1,0 +1,14 @@
+c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\bin\Debug\net10.0\LibraryManagmentSystem.exe
+c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\bin\Debug\net10.0\LibraryManagmentSystem.deps.json
+c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\bin\Debug\net10.0\LibraryManagmentSystem.runtimeconfig.json
+c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\bin\Debug\net10.0\LibraryManagmentSystem.dll
+c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\bin\Debug\net10.0\LibraryManagmentSystem.pdb
+c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\obj\Debug\net10.0\LibraryManagmentSystem.GeneratedMSBuildEditorConfig.editorconfig
+c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\obj\Debug\net10.0\LibraryManagmentSystem.AssemblyInfoInputs.cache
+c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\obj\Debug\net10.0\LibraryManagmentSystem.AssemblyInfo.cs
+c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\obj\Debug\net10.0\LibraryManagmentSystem.csproj.CoreCompileInputs.cache
+c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\obj\Debug\net10.0\LibraryManagmentSystem.dll
+c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\obj\Debug\net10.0\refint\LibraryManagmentSystem.dll
+c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\obj\Debug\net10.0\LibraryManagmentSystem.pdb
+c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\obj\Debug\net10.0\LibraryManagmentSystem.genruntimeconfig.cache
+c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\obj\Debug\net10.0\ref\LibraryManagmentSystem.dll
