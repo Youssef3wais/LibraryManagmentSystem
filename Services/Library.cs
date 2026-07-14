@@ -2,7 +2,7 @@
 
 public class Library {
     private static Library instance;
-    private INotificationService _notificationService; 
+    private static INotificationService _notificationService ; 
     private List<Book> books = new List<Book>();
     private List<Member> members = new List<Member>();
 
@@ -16,6 +16,9 @@ public class Library {
         }
         return instance;
     }
+    public INotificationService GetNotificationService() {
+        return _notificationService ;
+    }
     
     public void addBook(Book book) {
         books.Add(book);
@@ -26,8 +29,13 @@ public class Library {
         bool removed = false ;
         foreach(Book book in books) {
             if (book.Id == bookId) {
-                books.Remove(book);
-                removed = true ;
+                if (book.IsAvailable) {
+                    books.Remove(book);
+                    removed = true ;
+                    _notificationService.notify($"{book.Title} successfully removed from library...");
+                } else {
+                    _notificationService.notify($"{book.Title} isn't available in the library, can't be removed!!!");
+                }
                 break;
             }
         }
@@ -49,38 +57,34 @@ public class Library {
                 foreach(Member member in members) {
                     if (member.Id == memberId) {
                         borrowed = member.borrowBooks([book]);
-                        if (borrowed) {
-                            _notificationService.notify($"{member.Name} succesfully borrowed {book.Title}");
-                        }
-                        break;
+                        return borrowed;
                     }
                 }
+                _notificationService.notify($"Member Id: {memberId}, Doesn't exist");
                 break;
             }
         }
+        _notificationService.notify($"Book Id: {bookId}, Doesn't exist");
         return borrowed;
     }
 
     public bool returnBook(int memberId, int bookId) {
-        bool returned = false;
+        bool bookReturned = false;
         //loop with id, later changes to linq
         foreach(Book book in books) {
             if (book.Id == bookId) {
                 foreach(Member member in members) {
                     if (member.Id == memberId) {
-                        member.returnBooks([book]);
-                        returned = true ;
-                        _notificationService.notify($"{member.Name} succesfully retured {book.Title}");
-                        break;
+                        bookReturned = member.returnBooks([book]);
+                        return bookReturned;
                     }
                 }
+                _notificationService.notify($"Member Id: {memberId}, Doesn't exist");
                 break;
             }
         }
-        if (!returned) {
-            _notificationService.notify($"Book Id: {bookId} didn't returned, check ids & try agian!! ");
-        }
-        return returned;
+        _notificationService.notify($"Book Id: {bookId}, Doesn't exist");
+        return bookReturned;
     }
 
     public void displayAvailableBooks() {
