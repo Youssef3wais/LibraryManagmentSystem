@@ -12,3 +12,4 @@ c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\obj\Debug\net10.0\re
 c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\obj\Debug\net10.0\LibraryManagmentSystem.pdb
 c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\obj\Debug\net10.0\LibraryManagmentSystem.genruntimeconfig.cache
 c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\obj\Debug\net10.0\ref\LibraryManagmentSystem.dll
+c:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\obj\Debug\net10.0\LibraryManagmentSystem.csproj.AssemblyReference.cache

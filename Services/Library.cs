@@ -1,23 +1,15 @@
 ﻿namespace LibraryManagmentSystem;
 
 public class Library {
-    private static Library instance;
-    private static INotificationService _notificationService ; 
+    private INotificationService _notificationService ; 
     private List<Book> books = new List<Book>();
     private List<Member> members = new List<Member>();
 
-    private Library() {
-        _notificationService = new ConsoleNotificationService(); 
-    }
-
-    public static Library getInstance() {
-        if(instance == null) {
-            instance = new Library();
-        }
-        return instance;
+    public Library(INotificationService notificationService) {
+        _notificationService = notificationService; 
     }
     public INotificationService GetNotificationService() {
-        return _notificationService ;
+        return _notificationService;
     }
     
     public bool addBook(Book newBook) {
@@ -84,29 +76,30 @@ public class Library {
 
     public bool returnBook(int memberId, int bookId) {
         bool bookReturned = false;
-        bool bookIdFound = false ;
-        bool memberIdFound = false ;
-        //loop with id, later changes to linq
-        foreach(Book book in books) {
-            if (book.Id == bookId) {
-                bookIdFound = true ;
-                foreach(Member member in members) {
-                    if (member.Id == memberId) {
-                        memberIdFound = true ;
-                        bookReturned = member.returnBooks([book]);
-                        return bookReturned;
-                    }
-                }
-                if(!memberIdFound)_notificationService.notify($"Member Id: {memberId}, Doesn't exist");
-                break;
-            }
+        Member member = members.FirstOrDefault(member => member.Id == memberId);
+        Book book = books.FirstOrDefault(book => book.Id == bookId);
+
+        
+        //if couldnt find member id in the member list 
+        if (member == null) {
+            _notificationService.notify($"Member Id: {memberId}, Doesn't exist in the library");
         }
-        if(!bookIdFound)_notificationService.notify($"Book Id: {bookId}, Doesn't exist");
+
+        if (book == null) {
+            _notificationService.notify($"book Id: {bookId} doesn't exist in the library!!!");
+        }
+
+        // if member id and book id both doesnt exist i want to display both messages then exit
+        if(member == null || book == null) {
+            return false ;
+        }
+
+        bookReturned = member.returnBooks([book]);
         return bookReturned;
     }
 
     public void displayAvailableBooks() {
-        bool bookDisplayed = false ;
+        bool bookDisplayed = false ; //to check if any book is displayed 
         _notificationService.notify("Current available books: ");
         foreach(Book book in books) {
             if (book.IsAvailable) {
@@ -114,26 +107,20 @@ public class Library {
                 bookDisplayed = true ;
             }
         }
-        if (!bookDisplayed) {
+        if (!bookDisplayed) { //if no dingle book is displayed 
             _notificationService.notify("No current available books");
         }
     }
 
     public List<Book> searchBooks(string keyword) {
-        List<Book> matchedBooks = new List<Book>() ;
         if(keyword == null) {
             _notificationService.notify("Please enter a valid keyword!!");
-            return matchedBooks;
+            return new List<Book>() ;   //return an empty list
         }
-        foreach(Book book in books) {
-            if (book.Title.Contains(keyword, StringComparison.OrdinalIgnoreCase)) {
-                matchedBooks.Add(book);
-            }
-        }
-        return matchedBooks;
+
+        //return the matched books list 
+        return books.Where(book => book.Title.Contains(keyword, StringComparison.OrdinalIgnoreCase)).ToList();
     }
-    public void setNotificationService(INotificationService notificationService) {
-        _notificationService = notificationService ;
-    }
+    
 
 }

@@ -3,7 +3,7 @@
 namespace LibraryManagmentSystem;
 
 public class Member : Person {
-    private Library _library = Library.getInstance();
+    INotificationService _notificationService = new ConsoleNotificationService(); 
 
         // 2. Access the notification service through your public getter
         
@@ -18,10 +18,10 @@ public class Member : Person {
             if (book.IsAvailable) {
                 Books.Add(book);
                 borrowed = true;
-                _library.GetNotificationService().notify($"{this.Name} succesfully borrowed {book.Title}");
+                _notificationService.notify($"{this.Name} succesfully borrowed {book.Title}");
                 book.IsAvailable = false ; // when some one borrow a book changes to not available
             } else {
-                _library.GetNotificationService().notify($"{book.Title} isn't available right now!!");
+                _notificationService.notify($"{book.Title} isn't available right now!!");
             }
         }
         return borrowed ;
@@ -31,24 +31,24 @@ public class Member : Person {
         foreach(Book book in books) {
             bool removed = Books.Remove(book);
             if (removed) {
-                _library.GetNotificationService().notify($"{this.Name} succesfully returned {book.Title}");
+                _notificationService.notify($"{this.Name} succesfully returned {book.Title}");
                 book.IsAvailable = true ;
             }else if (!removed) {
                 //notification book not found 
                 allBooksReturned = false ;
-                _library.GetNotificationService().notify($"{book.Title} is not found in borrowed books by {this.Name}");
+                _notificationService.notify($"{book.Title} is not found in borrowed books by {this.Name}");
             }
         }
         return allBooksReturned ;
     }
     public override void displayInfo() {
-        _library.GetNotificationService().notify($"Member name: {this.Name}, Id: {this.Id}");
+        _notificationService.notify($"Member name: {this.Name}, Id: {this.Id}");
         if (Books.Count < 1) {
-            _library.GetNotificationService().notify("No Borrowed books");
+            _notificationService.notify("No Borrowed books");
         } else {
-            _library.GetNotificationService().notify("Current Borrowed books: ");
+            _notificationService.notify("Current Borrowed books: ");
             for(int i=0; i<Books.Count;i++) {
-                _library.GetNotificationService().notify($"{i+1}: {Books[i].Title}");
+                _notificationService.notify($"{i+1}: {Books[i].Title}");
             }
         }
     }

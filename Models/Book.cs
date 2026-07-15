@@ -15,10 +15,4 @@ public class Book {
         Isbn = isbn;
         IsAvailable = isAvailable;
     }
-    // public Book(string title, string author, bool isAvailable) {
-    //     Id = ++lastId;
-    //     Title = title;
-    //     Author = author;
-    //     IsAvailable = isAvailable;
-    // }
 }

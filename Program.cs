@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq.Expressions;
 using LibraryManagmentSystem;
+using System.Linq;
 
 class Program {
     static void Main() {
-        Library library = Library.getInstance(); //default notification channel -> console 
+        Library library = new Library(new ConsoleNotificationService());
 
         while (true) {
             Console.WriteLine("==========================\nLibrary Management System\n==========================");

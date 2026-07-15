@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "zfe7ROzWvt8=",
+  "dgSpecHash": "NBmk7sruUrs=",
   "success": true,
   "projectFilePath": "c:\\vsProjects\\LibraryManagmentSystem\\LibraryManagmentSystem\\LibraryManagmentSystem.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Yusef\\.nuget\\packages\\newtonsoft.json\\13.0.4\\newtonsoft.json.13.0.4.nupkg.sha512"
+  ],
   "logs": []
 }
