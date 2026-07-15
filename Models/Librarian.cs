@@ -1,8 +1,10 @@
-﻿namespace LibraryManagmentSystem;
+namespace LibraryManagmentSystem;
 
 public class Librarian: Person{
-    Library library = Library.getInstance();
-    public Librarian(string name): base(name){
+    private Library library;
+    
+    public Librarian(string name, Library library): base(name){
+        this.library = library;
     }
     public void addNewBook(Book book) {
         library.addBook(book);
@@ -13,5 +15,4 @@ public class Librarian: Person{
     public override void displayInfo() {
         Console.WriteLine($"Librarian name: {this.Name}, Id: {this.Id}");
     }
-    
 }
