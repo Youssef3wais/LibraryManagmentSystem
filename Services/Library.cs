@@ -20,29 +20,39 @@ public class Library {
         return _notificationService ;
     }
     
-    public void addBook(Book book) {
-        books.Add(book);
-        _notificationService.notify($"{book.Title} added succesfully with id: {book.Id}");
+    public bool addBook(Book newBook) {
+        bool bookAdded = false;
+        foreach(Book book in books) {
+            if(book.Isbn == newBook.Isbn) {
+                _notificationService.notify($"Duplicate ISBN, {newBook.Title} cant be added!!!");
+                return bookAdded;
+            }
+        }
+        books.Add(newBook);
+        bookAdded = true ;
+        _notificationService.notify($"{newBook.Title} added succesfully with id: {newBook.Id}");
+        return bookAdded ;
     }
 
     public bool removeBook(int bookId) {
-        bool removed = false ;
-        foreach(Book book in books) {
-            if (book.Id == bookId) {
-                if (book.IsAvailable) {
-                    books.Remove(book);
-                    removed = true ;
-                    _notificationService.notify($"{book.Title} successfully removed from library...");
-                } else {
-                    _notificationService.notify($"{book.Title} isn't available in the library, can't be removed!!!");
-                }
-                break;
-            }
+        //search using LINQ for the first matching bookId in books list
+        Book book = books.FirstOrDefault(book => book.Id == bookId);
+
+        //if book cant found 
+        if(book == null) {
+            _notificationService.notify($"book Id: {bookId} doesn't exist in the library!!!");
+            return false ;
         }
-        if (!removed) { //print notfound message
-            _notificationService.notify($"book Id: {bookId} Not Found!!!");
+
+
+        if (book.IsAvailable) {
+            _notificationService.notify($"{book.Title} successfully removed from library...");
+            return true ;
+
+        }else {             //if book exist but isnt available right now 
+            _notificationService.notify($"{book.Title} isn't available in the library right now!!!");
+            return false ;
         }
-        return removed;
     }
     public void registerMember(Member member) {
         members.Add(member);
@@ -50,40 +60,48 @@ public class Library {
     }
 
     public bool borrowBook(int memberId, int bookId) {
-        bool borrowed = false;
-        //loop with id, later changes to linq
-        foreach(Book book in books) {
-            if (book.Id == bookId) {
-                foreach(Member member in members) {
-                    if (member.Id == memberId) {
-                        borrowed = member.borrowBooks([book]);
-                        return borrowed;
-                    }
-                }
-                _notificationService.notify($"Member Id: {memberId}, Doesn't exist");
-                break;
-            }
+        bool borrowed = false ;
+        Member member = members.FirstOrDefault(member => member.Id == memberId);
+        Book book = books.FirstOrDefault(book => book.Id == bookId);
+
+        //if couldnt find member id in the member list 
+        if (member == null) {
+            _notificationService.notify($"Member Id: {memberId}, Doesn't exist in the library");
         }
-        _notificationService.notify($"Book Id: {bookId}, Doesn't exist");
+
+        if (book == null) {
+            _notificationService.notify($"book Id: {bookId} doesn't exist in the library!!!");
+        }
+
+        // if member id and book id both doesnt exist i want to display both messages then exit
+        if(member == null || book == null) {
+            return false ;
+        }
+
+        borrowed = member.borrowBooks([book]);
         return borrowed;
     }
 
     public bool returnBook(int memberId, int bookId) {
         bool bookReturned = false;
+        bool bookIdFound = false ;
+        bool memberIdFound = false ;
         //loop with id, later changes to linq
         foreach(Book book in books) {
             if (book.Id == bookId) {
+                bookIdFound = true ;
                 foreach(Member member in members) {
                     if (member.Id == memberId) {
+                        memberIdFound = true ;
                         bookReturned = member.returnBooks([book]);
                         return bookReturned;
                     }
                 }
-                _notificationService.notify($"Member Id: {memberId}, Doesn't exist");
+                if(!memberIdFound)_notificationService.notify($"Member Id: {memberId}, Doesn't exist");
                 break;
             }
         }
-        _notificationService.notify($"Book Id: {bookId}, Doesn't exist");
+        if(!bookIdFound)_notificationService.notify($"Book Id: {bookId}, Doesn't exist");
         return bookReturned;
     }
 
