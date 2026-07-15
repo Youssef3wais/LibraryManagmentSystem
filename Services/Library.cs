@@ -8,9 +8,6 @@ public class Library {
     public Library(INotificationService notificationService) {
         _notificationService = notificationService; 
     }
-    public INotificationService GetNotificationService() {
-        return _notificationService;
-    }
     
     public bool addBook(Book newBook) {
         bool bookAdded = false;
