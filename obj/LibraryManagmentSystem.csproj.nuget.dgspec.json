@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\vsProjects\\libraryManagmentSystem\\LibraryManagmentSystem\\LibraryManagmentSystem.csproj": {}
+    "C:\\vsProjects\\LibraryManagmentSystem\\LibraryManagmentSystem\\LibraryManagmentSystem.csproj": {}
   },
   "projects": {
-    "C:\\vsProjects\\libraryManagmentSystem\\LibraryManagmentSystem\\LibraryManagmentSystem.csproj": {
+    "C:\\vsProjects\\LibraryManagmentSystem\\LibraryManagmentSystem\\LibraryManagmentSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\vsProjects\\libraryManagmentSystem\\LibraryManagmentSystem\\LibraryManagmentSystem.csproj",
+        "projectUniqueName": "C:\\vsProjects\\LibraryManagmentSystem\\LibraryManagmentSystem\\LibraryManagmentSystem.csproj",
         "projectName": "LibraryManagmentSystem",
-        "projectPath": "C:\\vsProjects\\libraryManagmentSystem\\LibraryManagmentSystem\\LibraryManagmentSystem.csproj",
+        "projectPath": "C:\\vsProjects\\LibraryManagmentSystem\\LibraryManagmentSystem\\LibraryManagmentSystem.csproj",
         "packagesPath": "C:\\Users\\Yusef\\.nuget\\packages\\",
-        "outputPath": "C:\\vsProjects\\libraryManagmentSystem\\LibraryManagmentSystem\\obj\\",
+        "outputPath": "C:\\vsProjects\\LibraryManagmentSystem\\LibraryManagmentSystem\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Yusef\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -1,7 +1,7 @@
 ﻿namespace LibraryManagmentSystem;
 
 public class Library {
-    private INotificationService _notificationService ; 
+    private readonly INotificationService _notificationService ; 
     private List<Book> books = new List<Book>();
     private List<Member> members = new List<Member>();
 
