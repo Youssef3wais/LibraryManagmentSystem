@@ -14,7 +14,16 @@ public class Library {
         _membersJsonHandler = membersJsonHandler;
 
         books = booksJsonHandler.ReadFileToList();
+        Book lastBook = books.LastOrDefault();      //fix the error the id resets when starting a new program 
+        if(lastBook != null) {
+            Book.setLastId(lastBook.Id);
+        }
         members = membersJsonHandler.ReadFileToList();
+        Member lastMember = members.LastOrDefault();
+        if(lastMember != null) {
+            Member.setLastId(lastMember.Id);
+        }
+        
     }
     
     public bool addBook(Book newBook) {
@@ -114,15 +123,28 @@ public class Library {
 
     public void displayAvailableBooks() {
         bool bookDisplayed = false ; //to check if any book is displayed 
-        _notificationService.notify("Current available books: ");
+        _notificationService.notify("Current available Books: ");
         foreach(Book book in books) {
             if (book.IsAvailable) {
-                _notificationService.notify($"- Book Title: {book.Title}, Id: {book.Id}");
+                _notificationService.notify($"   - Book Title: {book.Title}, Id: {book.Id}");
                 bookDisplayed = true ;
             }
         }
         if (!bookDisplayed) { //if no dingle book is displayed 
-            _notificationService.notify("No current available books");
+            _notificationService.notify("No current available Books");
+        }
+    }
+    public void displayAvailableMembers() {
+        bool membersDisplayed = false ; //to check if any book is displayed 
+        _notificationService.notify("Current registered Members: ");
+        foreach(Member member in members) {
+            if (member != null) {
+                _notificationService.notify($"   - Member name: {member.Name}, Id: {member.Id}");
+                membersDisplayed = true ;
+            }
+        }
+        if (!membersDisplayed) { //if no single member is displayed 
+            _notificationService.notify("No current available Members");
         }
     }
 

@@ -12,6 +12,14 @@ class Program {
         string membersJsonFilePath = @"C:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\Data\Members.json";
         Library library = new Library(new ConsoleNotificationService(), new JsonHandler<Book>(booksJsonFilePath), new JsonHandler<Member>(membersJsonFilePath) );
         
+
+        library.displayAvailableMembers();
+        library.displayAvailableBooks();
+        Console.WriteLine();
+        
+
+
+
         while (true) {
             Console.WriteLine("==========================\nLibrary Management System\n==========================");
             Console.WriteLine("1. Add Book\n2. Register Member\n3. Borrow Book\n4. Return Book\n5. List Available Books\n6. Search Books\n7. Exit\n8. Remove book from the library");

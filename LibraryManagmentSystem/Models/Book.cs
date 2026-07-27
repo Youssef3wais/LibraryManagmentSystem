@@ -17,6 +17,9 @@ public record class Book {
         Isbn = isbn;
         IsAvailable = isAvailable;
     }
+    public static void setLastId(int id) {
+        lastId = id;
+    }
     public override string ToString() {
         return $"[ID: {Id}] {Title}";
     }

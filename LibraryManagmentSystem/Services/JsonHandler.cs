@@ -7,6 +7,7 @@ namespace JsonHandler;
 public class JsonHandler<T>: IJsonHandler<T> {
     private readonly string _filePath;
     private readonly JsonSerializerOptions _options;
+    private readonly INotificationService _notificationService = new FileLogger(@"C:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\Data\Data.log");
 
     public JsonHandler(string filePath) {
         this._filePath = filePath;
@@ -19,10 +20,10 @@ public class JsonHandler<T>: IJsonHandler<T> {
         try {
             string json = JsonSerializer.Serialize(list, _options);
             File.WriteAllText(_filePath, json);
-            Console.WriteLine($"JSON Serialization complete. Data saved to {_filePath}");
+            _notificationService.notify($"JSON Serialization complete. Data saved to {_filePath}");
             return true ;
         }catch(Exception e) {
-            Console.WriteLine($"JSON Serialization Failed. Error saving {_filePath}: {e.Message}");
+            _notificationService.notify($"JSON Serialization Failed. Error saving {_filePath}: {e.Message}");
             return false ;
         }
     }
@@ -33,18 +34,19 @@ public class JsonHandler<T>: IJsonHandler<T> {
             if (!File.Exists(_filePath)) return new List<T>();
             string json = File.ReadAllText(_filePath);
             if (string.IsNullOrEmpty(json)) {
-                Console.WriteLine($"JSON Deserialization complete, File {_filePath} is Empty...");
+                _notificationService.notify($"JSON Deserialization complete, File {_filePath} is Empty...");
                 return new List<T>();
             }
-            Console.WriteLine("JSON Deserialization complete");
+            _notificationService.notify("JSON Deserialization complete");
             var x = JsonSerializer.Deserialize<List<T>>(json) ?? new List<T>();
             return x;
         }catch(Exception e) {
-            Console.WriteLine($"JSON Deserialization Failed. Error reading {_filePath}: {e.Message}");
+            _notificationService.notify($"JSON Deserialization Failed. Error reading {_filePath}: {e.Message}");
             return new List<T>();
         }
         
     }
+   
 
     //not used any more
     public bool AddItem(T item) {
@@ -64,7 +66,7 @@ public class JsonHandler<T>: IJsonHandler<T> {
         }
         List<T> currentData = this.ReadFileToList();
         currentData.Remove(item);
-        Console.WriteLine($"{item.ToString} Succesfully removed from the Json file");
+        _notificationService.notify($"{item.ToString} Succesfully removed from the Json file");
         WriteListToFile(currentData);
         return true;
     }

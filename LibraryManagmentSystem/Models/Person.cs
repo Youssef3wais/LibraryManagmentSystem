@@ -1,4 +1,6 @@
-﻿namespace LibraryManagmentSystem;
+﻿using System.Runtime.CompilerServices;
+
+namespace LibraryManagmentSystem;
 
 public abstract class Person {
     private static int lastId = 0 ;
@@ -10,6 +12,9 @@ public abstract class Person {
     public Person(string name) {
         Id = ++lastId;
         Name = name ;
+    }
+    public static void setLastId(int id) {
+        lastId = id;
     }
     public abstract void displayInfo();
 }
