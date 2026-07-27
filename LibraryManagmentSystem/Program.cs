@@ -22,7 +22,7 @@ class Program {
 
         while (true) {
             Console.WriteLine("==========================\nLibrary Management System\n==========================");
-            Console.WriteLine("1. Add Book\n2. Register Member\n3. Borrow Book\n4. Return Book\n5. List Available Books\n6. Search Books\n7. Exit\n8. Remove book from the library");
+            Console.WriteLine("1. Add Book\n2. Register Member\n3. Borrow Book\n4. Return Book\n5. List Available Books\n6. Search Books\n7. Exit\n8. Remove book from the library\n9. List Available Members");
             
             
             Console.Write("Select option: ");
@@ -81,6 +81,8 @@ class Program {
                     continue;
                 }
                 library.removeBook(bookId);
+            }else if (option == "9") {
+                library.displayAvailableMembers();
             } else {
                 Console.WriteLine("Invalid option, Please enter a valid number...");
             }
