@@ -13,11 +13,11 @@ A professional, object-oriented console-based Library Management System (LMS) bu
 6. [Bonus Features & Implementation Details](#bonus-features--implementation-details)
     - [LINQ for Searching and Filtering](#1-linq-for-searching-and-filtering-implemented)
     - [Dependency Injection](#2-dependency-injection-implemented)
-    - [Logging / Notifications](#3-logging--notifications-partially-implemented)
-    - [Unit Tests](#4-unit-tests-not-implemented)
-    - [Generic Repository Pattern](#5-generic-repository-pattern-not-implemented)
-    - [Save Data to JSON](#6-save-data-to-json-not-implemented)
-    - [Load Data from JSON](#7-load-data-from-json-not-implemented)
+    - [Logging / Notifications](#3-logging--notifications-implemented)
+    - [Unit Tests](#4-unit-tests-implemented)
+    - [Generic Repository Pattern](#5-generic-repository-pattern-implemented)
+    - [Save Data to JSON](#6-save-data-to-json-implemented)
+    - [Load Data from JSON](#7-load-data-from-json-implemented)
 
 ---
 
@@ -26,10 +26,10 @@ A professional, object-oriented console-based Library Management System (LMS) bu
 The Library Management System provides a Command Line Interface (CLI) application for executing common library transactions. 
 
 ### Key Features
-* **Book Management**: Register new books with automated duplicate prevention via ISBN validation.
-* **Member Registration**: Track library members using an auto-incrementing ID system.
-* **Borrowing & Returning**: Borrow and return books with real-time availability updates and notifications.
-* **Search Functionality**: Dynamic, case-insensitive keyword searching of titles using LINQ.
+* **Book Management**: Register new books with automated duplicate prevention via ISBN validation, and remove books from the library (implemented in `addBook` and `removeBook` within [Library.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/Library.cs#L20-L57)).
+* **Member Registration**: Track library members using an auto-incrementing ID system (implemented in `registerMember` within [Library.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/Library.cs#L58-L62)).
+* **Borrowing & Returning**: Borrow and return books with real-time availability updates and notifications (implemented in `borrowBook` and `returnBook` within [Library.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/Library.cs#L64-L113) and `borrowBooks` / `returnBooks` in [Member.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Models/Member.cs#L15-L43)).
+* **Search Functionality**: Dynamic, case-insensitive keyword searching of titles using LINQ (implemented in `searchBooks` within [Library.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/Library.cs#L129-L137)).
 
 ---
 
@@ -68,16 +68,6 @@ LibraryManagementSystem/ (Root)
     ├── .gitignore                     # Git ignore configuration
     └── README.md                      # Project documentation
 ```
-
----
-
-## UML Class Diagram
-
-Below is the UML class diagram showing the core classes, interfaces, inheritance hierarchy, and relationships:
-
-![UML Class Diagram](uml_class_diagram.png)
-
----
 
 ## How to Run the Project
 
@@ -126,12 +116,12 @@ Follow the console prompts to add/remove books, register members, borrow/return 
 
 ## Design Decisions
 
-* **Inheritance & Abstraction**: Code duplication is minimized by using an abstract base class `Person` for common fields (`Id`, `Name`) and abstract method signatures (`displayInfo()`), which are inherited by `Member` and `Librarian`.
-* **Polymorphism**: The `INotificationService` interface decouples user notifications from the domain models. The system can switch between Console notifications and simulated Email notifications without changing the consumer code.
-* **Data Integrity**:
-  * ISBN uniqueness is enforced at the `Library` service level during book addition.
-  * Availability state (`IsAvailable`) transitions atomically when books are checked out or returned.
-  * Persisted state is automatically synchronized on write operations to JSON datastores.
+* **Inheritance & Abstraction**: Code duplication is minimized by using the abstract base class [Person.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Models/Person.cs) for common fields (`Id`, `Name`) and abstract method signature `displayInfo()`, which are inherited by [Member.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Models/Member.cs) and [Librarian.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Models/Librarian.cs).
+* **Polymorphism**: The [INotificationService.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/INotificationService.cs) interface decouples user notifications from the domain models. The system can switch between console output via [ConsoleNotificationService.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/ConsoleNotificationService.cs) and simulated email logging via [EmailNotificationService.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/EmailNotificationService.cs) without changing the consumer code.
+* **Data Integrity & Persistence**:
+  * ISBN uniqueness is enforced at the [Library.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/Library.cs#L20-L34) level during book addition.
+  * Availability state (`IsAvailable` in [Book.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Models/Book.cs)) transitions atomically when books are checked out or returned.
+  * Persisted state is automatically synchronized on write operations to JSON datastores [Books.json](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Data/Books.json) and [Members.json](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Data/Members.json).
 
 ---
 
@@ -170,9 +160,9 @@ Constructor-based dependency injection is used to supply notifications and JSON 
   ```
 
 ### 3. Logging / Notifications (Implemented)
-Logging and notification dispatching are abstracted using [INotificationService.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/INotificationService.cs). 
-* `ConsoleNotificationService` logs directly to standard output.
-* `EmailNotificationService` prefixes messages with `[Email] Sending:` to simulate mail notification logging.
+Logging and notification dispatching are abstracted using the interface [INotificationService.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/INotificationService.cs). 
+* [ConsoleNotificationService.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/ConsoleNotificationService.cs) logs directly to standard output.
+* [EmailNotificationService.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/EmailNotificationService.cs) prefixes messages with `[Email] Sending:` to simulate mail notification logging.
 
 ### 4. Unit Tests (Implemented)
 Unit tests are implemented under the [LibraryManagementSystem.Tests](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagementSystem.Tests) project using **xUnit**:
@@ -181,7 +171,7 @@ Unit tests are implemented under the [LibraryManagementSystem.Tests](file:///c:/
   * Prevent duplicate ISBN addition.
   * Attempting to remove non-existent or borrowed books.
   * Search capability using LINQ queries.
-* **Test Isolation**: Leverages custom fake implementations (`FakeJsonHandler<T>` and `FakeNotificationService`) to run unit tests in memory without causing side-effects to disk JSON files.
+* **Test Isolation**: Leverages custom fake implementations (`FakeJsonHandler<T>` and `FakeNotificationService` defined at the bottom of [LibraryTests.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagementSystem.Tests/LibraryTests.cs#L51-L61)) to run unit tests in memory without causing side-effects to disk JSON files.
 
 ### 5. Generic Repository Pattern (Implemented)
 Instead of hardcoding file writing logic inside the domain layer or the `Library` service directly:
@@ -189,7 +179,7 @@ Instead of hardcoding file writing logic inside the domain layer or the `Library
 * This provides a clean generic repository-style interface for database serialization and deserialization, separating file storage rules from the business rule engine.
 
 ### 6. Save Data to JSON (Implemented)
-* Serialization to JSON files (`Books.json` and `Members.json`) is executed whenever the state of the library is updated (e.g., adding/removing a book, registering a member, or borrowing/returning a book).
+* Serialization to JSON files (`Books.json` and `Members.json` under `LibraryManagmentSystem/Data/`) is executed whenever the state of the library is updated (e.g., adding/removing a book, registering a member, or borrowing/returning a book).
 * File writes are handled asynchronously/atomically via standard JSON serializer options inside [JsonHandler.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/JsonHandler.cs).
 
 ### 7. Load Data from JSON (Implemented)
