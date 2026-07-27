@@ -1,0 +1,23 @@
+[
+  {
+    "Id": 1,
+    "Title": "Java",
+    "Author": "xx",
+    "Isbn": "java_1",
+    "IsAvailable": true
+  },
+  {
+    "Id": 1,
+    "Title": "java",
+    "Author": "yusef",
+    "Isbn": "009191",
+    "IsAvailable": true
+  },
+  {
+    "Id": 3,
+    "Title": "Clean Code",
+    "Author": "Robert C. Martin",
+    "Isbn": "12345",
+    "IsAvailable": true
+  }
+]

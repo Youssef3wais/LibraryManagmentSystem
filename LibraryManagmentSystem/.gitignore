@@ -1,0 +1,18 @@
+# Build outputs
+[Bb]in/
+[Oo]bj/
+
+# IDE / Editor folders
+.vs/
+.idea/
+.vscode/
+
+# Visual Studio files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Operating System files
+.DS_Store
+Thumbs.db
