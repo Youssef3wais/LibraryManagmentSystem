@@ -3,18 +3,18 @@
 namespace LibraryManagmentSystem;
 
 public abstract class Person {
-    private static int lastId = 0 ;
+    private static int _lastId = 0 ;
     public int Id{get; init;}
     public string Name{set;get;}
 
     Person() {
     }
     public Person(string name) {
-        Id = ++lastId;
+        Id = Interlocked.Increment(ref _lastId);
         Name = name ;
     }
-    public static void setLastId(int id) {
-        lastId = id;
+    public static void SetLastId(int id) {
+        _lastId = id;
     }
-    public abstract void displayInfo();
+    public abstract override string ToString();
 }

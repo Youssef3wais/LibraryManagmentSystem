@@ -1,7 +1,7 @@
 namespace LibraryManagmentSystem;
 
 class ConsoleNotificationService : INotificationService {
-    public void notify(string message) {
+    public void Notify(string message) {
         Console.WriteLine(message);
     }
 }

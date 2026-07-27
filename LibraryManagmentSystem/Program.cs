@@ -7,14 +7,27 @@ using System.Security.Cryptography.X509Certificates;
 
 class Program {
     static void Main() {
-        //Setup
-        string booksJsonFilePath = @"C:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\Data\Books.json";
-        string membersJsonFilePath = @"C:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\Data\Members.json";
-        Library library = new Library(new ConsoleNotificationService(), new JsonHandler<Book>(booksJsonFilePath), new JsonHandler<Member>(membersJsonFilePath) );
+        //program current path
+        string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+        
+        //files pathes
+        string booksJsonFilePath = Path.Combine(baseDir, "Data", "Books.json");
+        string membersJsonFilePath = Path.Combine(baseDir, "Data", "Members.json");
+        string logFilePath = Path.Combine(baseDir, "Data", "Data.log");
+
+        //give paths to services 
+        var notificationService = new ConsoleNotificationService();
+        var logger = new FileLogger(logFilePath);
+        var booksJsonFileHandler = new JsonHandler<Book>(booksJsonFilePath, logger);
+        var membersJsonFileHandler = new JsonHandler<Member>(membersJsonFilePath, logger);
+
+
+        
+        Library library = new Library(notificationService, booksJsonFileHandler, membersJsonFileHandler);
         
 
-        library.displayAvailableMembers();
-        library.displayAvailableBooks();
+        library.DisplayAvailableMembers();
+        library.DisplayAvailableBooks();
         Console.WriteLine();
         
 
@@ -34,11 +47,11 @@ class Program {
                 string author = Console.ReadLine()??"";
                 Console.Write("Enter book isbn: ");
                 string isbn = Console.ReadLine()??"";
-                library.addBook(new Book(title, author, isbn, true));
+                library.AddBook(new Book(title, author, isbn, true));
             }else if (option == "2") {
                 Console.Write("Enter member name: ");
                 string name = Console.ReadLine()??"";
-                library.registerMember(new Member(name));
+                library.RegisterMember(new Member(name));
             }else if (option == "3") {
                 Console.Write("Enter member id: ");
                 if ( !int.TryParse(Console.ReadLine(), out int memberId)) {
@@ -50,7 +63,7 @@ class Program {
                     Console.Write("invalid id!!!");
                     continue;
                 }
-                library.borrowBook(memberId,bookId);
+                library.BorrowBook(memberId,bookId);
             }else if (option == "4") {
                 Console.Write("Enter member id: ");
                 if ( !int.TryParse(Console.ReadLine(), out int memberId)) {
@@ -62,14 +75,14 @@ class Program {
                     Console.Write("invalid id!!!");
                     continue;
                 }
-                library.returnBook(memberId, bookId);
+                library.ReturnBook(memberId, bookId);
             }else if (option == "5") {
-                library.displayAvailableBooks();
+                library.DisplayAvailableBooks();
             }else if (option == "6") {
                 Console.Write("Enter search keyword: ");
-                string keyword = Console.ReadLine();
+                string keyword = Console.ReadLine()??"";
                 Console.WriteLine("Matching book titles: ");
-                foreach(Book book in library.searchBooks(keyword)) {
+                foreach(Book book in library.SearchBooks(keyword)) {
                     Console.WriteLine($"- {book.Title}, Id: {book.Id}");
                 }
             }else if (option == "7") {
@@ -80,9 +93,9 @@ class Program {
                     Console.Write("invalid id!!!");
                     continue;
                 }
-                library.removeBook(bookId);
+                library.RemoveBook(bookId);
             }else if (option == "9") {
-                library.displayAvailableMembers();
+                library.DisplayAvailableMembers();
             } else {
                 Console.WriteLine("Invalid option, Please enter a valid number...");
             }

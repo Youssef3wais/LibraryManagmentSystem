@@ -1,56 +1,54 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 using JsonHandler;
 
 namespace LibraryManagmentSystem;
 
 public class Member : Person {
-    INotificationService _notificationService = new ConsoleNotificationService(); 
-    public JsonHandler<Member> membersJsonHandler = new JsonHandler<Member>(@"C:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\Data\Members.json");
 
-    public List<Book> Books { get; set; } = new List<Book>();
+    
+    private readonly List<Book> _books = new List<Book>();
+    
+    [JsonInclude]
+    public IReadOnlyList<Book> Books {
+        get => _books.AsReadOnly();
+        init {
+            _books.Clear();
+            _books.AddRange(value);
+        }
+    }
 
     public Member(string name): base(name) {
     }
     
-    public bool borrowBooks(List<Book> books) {
-        bool borrowed = false ;
-        foreach(Book book in books) {
-            if (book.IsAvailable) {
-                Books.Add(book);
-                borrowed = true;
-                _notificationService.notify($"{this.Name} succesfully borrowed {book.Title}");
-                book.IsAvailable = false ; // when some one borrow a book changes to not available
-            } else {
-                _notificationService.notify($"{book.Title} isn't available right now!!");
-            }
+    public bool BorrowBook(Book book) {
+        if (book.IsAvailable) {
+            _books.Add(book);
+            book.MarkBorrowed(); // when some one borrow a book changes to not available
+            return true;
         }
-        return borrowed ;
+        return false ;
     }
-    public bool returnBooks(List<Book> books) {
-        bool allBooksReturned = true ; //is all books in the list books returned?
-        foreach(Book book in books) {
-            bool removed = Books.Remove(book);
-            if (removed) {
-                _notificationService.notify($"{this.Name} succesfully returned {book.Title}");
-                book.IsAvailable = true ;
-            }else if (!removed) {
-                //notification book not found 
-                allBooksReturned = false ;
-                _notificationService.notify($"{book.Title} is not found in borrowed books by {this.Name}");
-            }
+    public bool ReturnBook(Book book) {
+        bool removed = _books.Remove(book);
+        if (removed) {
+            book.MarkReturned(); ;
+            return true ;
         }
-        return allBooksReturned ;
+
+        return false ;
     }
-    public override void displayInfo() {
-        _notificationService.notify($"Member name: {this.Name}, Id: {this.Id}");
+    public override string ToString() {
+        string result = $"- Member name: {this.Name}, Id: {this.Id}";
         if (Books.Count < 1) {
-            _notificationService.notify("No Borrowed books");
+            return result;
         } else {
-            _notificationService.notify("Current Borrowed books: ");
+            result += "\n      Current Borrowed books:";
             for(int i=0; i<Books.Count;i++) {
-                _notificationService.notify($"{i+1}: {Books[i].Title}");
+                result += $"\n           {i+1}: {Books[i].Title}";
             }
         }
+        return result;
     }
 
 

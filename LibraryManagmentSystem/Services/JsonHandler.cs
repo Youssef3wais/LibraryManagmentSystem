@@ -5,12 +5,13 @@ namespace JsonHandler;
 
 
 public class JsonHandler<T>: IJsonHandler<T> {
-    private readonly string _filePath;
+    private readonly string _JsonfilePath;
     private readonly JsonSerializerOptions _options;
-    private readonly INotificationService _notificationService = new FileLogger(@"C:\vsProjects\LibraryManagmentSystem\LibraryManagmentSystem\Data\Data.log");
+    private readonly INotificationService _notificationService;
 
-    public JsonHandler(string filePath) {
-        this._filePath = filePath;
+    public JsonHandler(string JsonfilePath, INotificationService logger) {
+        this._JsonfilePath = JsonfilePath;
+        this._notificationService = logger ;
         _options = new JsonSerializerOptions {
             WriteIndented = true
         };
@@ -19,11 +20,11 @@ public class JsonHandler<T>: IJsonHandler<T> {
     public bool WriteListToFile(List<T> list) {                
         try {
             string json = JsonSerializer.Serialize(list, _options);
-            File.WriteAllText(_filePath, json);
-            _notificationService.notify($"JSON Serialization complete. Data saved to {_filePath}");
+            File.WriteAllText(_JsonfilePath, json);
+            _notificationService.Notify($"JSON Serialization complete. List Data saved to {_JsonfilePath}");
             return true ;
         }catch(Exception e) {
-            _notificationService.notify($"JSON Serialization Failed. Error saving {_filePath}: {e.Message}");
+            _notificationService.Notify($"JSON Serialization Failed. Error saving {_JsonfilePath}: {e.Message}");
             return false ;
         }
     }
@@ -31,44 +32,20 @@ public class JsonHandler<T>: IJsonHandler<T> {
 
     public List<T> ReadFileToList() {
         try {
-            if (!File.Exists(_filePath)) return new List<T>();
-            string json = File.ReadAllText(_filePath);
+            if (!File.Exists(_JsonfilePath)) return new List<T>();
+            string json = File.ReadAllText(_JsonfilePath);
             if (string.IsNullOrEmpty(json)) {
-                _notificationService.notify($"JSON Deserialization complete, File {_filePath} is Empty...");
+                _notificationService.Notify($"JSON Deserialization complete, File {_JsonfilePath} is Empty...");
                 return new List<T>();
             }
-            _notificationService.notify("JSON Deserialization complete");
+            _notificationService.Notify($"{_JsonfilePath} Deserialization complete");
             var x = JsonSerializer.Deserialize<List<T>>(json) ?? new List<T>();
             return x;
         }catch(Exception e) {
-            _notificationService.notify($"JSON Deserialization Failed. Error reading {_filePath}: {e.Message}");
+            _notificationService.Notify($"JSON Deserialization Failed. Error reading {_JsonfilePath}: {e.Message}");
             return new List<T>();
         }
         
-    }
-   
-
-    //not used any more
-    public bool AddItem(T item) {
-        if (!File.Exists(_filePath)) {
-            return WriteListToFile(new List<T>(){item});
-        }
-        List<T> currentData = this.ReadFileToList();
-        
-        currentData.Add(item);
-        return WriteListToFile(currentData);
-    }
-
-    //not used any more
-    public bool RemoveItem(T item) {
-        if (!File.Exists(_filePath)) {
-            return false ;
-        }
-        List<T> currentData = this.ReadFileToList();
-        currentData.Remove(item);
-        _notificationService.notify($"{item.ToString} Succesfully removed from the Json file");
-        WriteListToFile(currentData);
-        return true;
     }
 
 }

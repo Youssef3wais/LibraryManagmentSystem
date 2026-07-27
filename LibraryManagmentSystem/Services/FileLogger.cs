@@ -7,7 +7,7 @@ class FileLogger : INotificationService {
         _filePath = filePath;
     }
 
-    public void notify(string message) {
+    public void Notify(string message) {
         File.AppendAllText(_filePath, $"[{DateTime.Now}] {message}{Environment.NewLine}");
     }
 }
