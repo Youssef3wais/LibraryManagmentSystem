@@ -106,3 +106,4 @@ C:\vsProjects\LibraryManagmentSystem\LibraryManagementSystem.Tests\obj\Debug\net
 C:\vsProjects\LibraryManagmentSystem\LibraryManagementSystem.Tests\obj\Debug\net10.0\LibraryManagementSystem.Tests.pdb
 C:\vsProjects\LibraryManagmentSystem\LibraryManagementSystem.Tests\obj\Debug\net10.0\LibraryManagementSystem.Tests.genruntimeconfig.cache
 C:\vsProjects\LibraryManagmentSystem\LibraryManagementSystem.Tests\obj\Debug\net10.0\ref\LibraryManagementSystem.Tests.dll
+C:\vsProjects\LibraryManagmentSystem\LibraryManagementSystem.Tests\obj\Debug\net10.0\LibraryManagementSystem.Tests.sourcelink.json

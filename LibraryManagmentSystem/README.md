@@ -36,26 +36,37 @@ The Library Management System provides a Command Line Interface (CLI) applicatio
 ## Directory Structure
 
 ```text
-LibraryManagmentSystem/
+LibraryManagementSystem/ (Root)
+│
+├── LibraryManagementSystem.Tests/
+│   ├── LibraryManagementSystem.Tests.csproj
+│   ├── LibraryTests.cs                # xUnit test cases
+│   └── ...
 │
 └── LibraryManagmentSystem/
+    ├── Data/
+    │   ├── Books.json                 # JSON data store for Books
+    │   └── Members.json               # JSON data store for Members
+    │
     ├── Models/
-    │   ├── Person.cs         # Abstract base class representing any individual (ID, Name)
-    │   ├── Member.cs         # Represents library members with borrowed book lists
-    │   ├── Librarian.cs      # Represents administrators capable of adding books
-    │   └── Book.cs           # Core Book entity (ID, Title, Author, ISBN, Availability)
+    │   ├── Person.cs                  # Abstract base class representing any individual (ID, Name)
+    │   ├── Member.cs                  # Represents library members with borrowed book lists
+    │   ├── Librarian.cs               # Represents administrators capable of adding books
+    │   └── Book.cs                    # Core Book entity (ID, Title, Author, ISBN, Availability)
     │
     ├── Services/
-    │   ├── INotificationService.cs        # Logging and notification interface
+    │   ├── INotificationService.cs    # Logging and notification interface
     │   ├── ConsoleNotificationService.cs # Concrete service outputting to console
     │   ├── EmailNotificationService.cs   # Concrete service simulating email logging
-    │   └── Library.cs                     # Core engine containing business logic
+    │   ├── IJsonHandler.cs            # Generic JSON serialization interface
+    │   ├── JsonHandler.cs             # Generic JSON file handler implementation
+    │   └── Library.cs                 # Core engine containing business logic
     │
-    ├── Program.cs            # CLI entry point and menu router
+    ├── Program.cs                     # CLI entry point, path setup, and menu router
     ├── LibraryManagmentSystem.csproj
-    ├── uml_class_diagram.png # UML class diagram of the system
-    ├── .gitignore            # Git ignore configuration
-    └── README.md             # Project documentation
+    ├── uml_class_diagram.png          # UML class diagram of the system
+    ├── .gitignore                     # Git ignore configuration
+    └── README.md                      # Project documentation
 ```
 
 ---
@@ -76,7 +87,7 @@ Below is the UML class diagram showing the core classes, interfaces, inheritance
 ### Build and Run Steps
 1. Navigate to the project's source directory:
    ```bash
-   cd LibraryManagmentSystem/LibraryManagmentSystem
+   cd LibraryManagmentSystem
    ```
 2. Build the project:
    ```bash
@@ -86,6 +97,12 @@ Below is the UML class diagram showing the core classes, interfaces, inheritance
    ```bash
    dotnet run
    ```
+
+### Running Unit Tests
+To run the xUnit test suite, execute the following command from the repository root directory:
+```bash
+dotnet test LibraryManagementSystem.Tests/LibraryManagementSystem.Tests.csproj
+```
 
 ### Usage
 Upon launching, the interactive CLI menu displays:
@@ -100,9 +117,10 @@ Library Management System
 5. List Available Books
 6. Search Books
 7. Exit
+8. Remove book from the library
 Select option:
 ```
-Follow the console prompts to add books, register members, and execute borrowing/returning.
+Follow the console prompts to add/remove books, register members, borrow/return books, list available books, or search books.
 
 ---
 
@@ -113,6 +131,7 @@ Follow the console prompts to add books, register members, and execute borrowing
 * **Data Integrity**:
   * ISBN uniqueness is enforced at the `Library` service level during book addition.
   * Availability state (`IsAvailable`) transitions atomically when books are checked out or returned.
+  * Persisted state is automatically synchronized on write operations to JSON datastores.
 
 ---
 
@@ -132,11 +151,15 @@ LINQ is leveraged in [Library.cs](file:///c:/vsProjects/LibraryManagmentSystem/L
   ```
 
 ### 2. Dependency Injection (Implemented)
-Constructor-based dependency injection is used to supply notifications to the core system in [Program.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Program.cs) and [Librarian.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Models/Librarian.cs):
+Constructor-based dependency injection is used to supply notifications and JSON handler services to the core system in [Program.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Program.cs):
 * **Library DI**:
   ```csharp
   // Program.cs
-  Library library = new Library(new ConsoleNotificationService());
+  Library library = new Library(
+      new ConsoleNotificationService(),
+      new JsonHandler<Book>(booksJsonFilePath),
+      new JsonHandler<Member>(membersJsonFilePath)
+  );
   ```
 * **Librarian DI**:
   ```csharp
@@ -146,27 +169,30 @@ Constructor-based dependency injection is used to supply notifications to the co
   }
   ```
 
-### 3. Logging / Notifications (Partially Implemented)
+### 3. Logging / Notifications (Implemented)
 Logging and notification dispatching are abstracted using [INotificationService.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/INotificationService.cs). 
 * `ConsoleNotificationService` logs directly to standard output.
 * `EmailNotificationService` prefixes messages with `[Email] Sending:` to simulate mail notification logging.
-* This abstraction can easily be extended to log to files using a library like Serilog or NLog.
 
-### 4. Unit Tests (Not Implemented)
-Unit tests are not currently included in the codebase. 
-* **Proposed Implementation**: A separate xUnit or NUnit project named `LibraryManagementSystem.Tests` could be added to test target functionalities like:
-  * Duplicate ISBN registration prevention.
-  * Successful member checkout logic.
-  * Failure scenarios when a member attempts to borrow an unavailable book.
+### 4. Unit Tests (Implemented)
+Unit tests are implemented under the [LibraryManagementSystem.Tests](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagementSystem.Tests) project using **xUnit**:
+* **Test File**: [LibraryTests.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagementSystem.Tests/LibraryTests.cs)
+* **Features Tested**:
+  * Prevent duplicate ISBN addition.
+  * Attempting to remove non-existent or borrowed books.
+  * Search capability using LINQ queries.
+* **Test Isolation**: Leverages custom fake implementations (`FakeJsonHandler<T>` and `FakeNotificationService`) to run unit tests in memory without causing side-effects to disk JSON files.
 
-### 5. Generic Repository Pattern (Not Implemented)
-Currently, data (like books and members) is stored directly inside the main library system class.
-* **Proposed Implementation**: We can create a separate storage manager (repository) to handle all data operations. This separates the library rules from how the data is saved or retrieved, making it easier to change where the data is stored in the future.
+### 5. Generic Repository Pattern (Implemented)
+Instead of hardcoding file writing logic inside the domain layer or the `Library` service directly:
+* We introduced the generic handler interface [IJsonHandler.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/IJsonHandler.cs) and its implementation [JsonHandler.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/JsonHandler.cs).
+* This provides a clean generic repository-style interface for database serialization and deserialization, separating file storage rules from the business rule engine.
 
-### 6. Save Data to JSON (Not Implemented)
-The app does not automatically save the library's data to a file when it closes.
-* **Proposed Implementation**: We can save the list of books and members into a standard text file on the computer (like `library_data.json`) when exiting the app, so we don't lose the data when the program closes.
+### 6. Save Data to JSON (Implemented)
+* Serialization to JSON files (`Books.json` and `Members.json`) is executed whenever the state of the library is updated (e.g., adding/removing a book, registering a member, or borrowing/returning a book).
+* File writes are handled asynchronously/atomically via standard JSON serializer options inside [JsonHandler.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/JsonHandler.cs).
 
-### 7. Load Data from JSON (Not Implemented)
-The app starts with an empty library every time it runs.
-* **Proposed Implementation**: When the program starts up, it can search for the saved file, read it, and reload all the saved books and members back into the application.
+### 7. Load Data from JSON (Implemented)
+* When the application starts, the injected handlers read `Books.json` and `Members.json` using `ReadFileToList()` to prepopulate the list of books and members in [Library.cs](file:///c:/vsProjects/LibraryManagmentSystem/LibraryManagmentSystem/Services/Library.cs).
+* Ensures the user's data persists across program lifecycles.
+
