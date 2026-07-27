@@ -19,25 +19,22 @@ public class Library {
         members = membersJsonHandler.ReadFileToList();
 
         int lastBookId = books.Count > 0 ? books.Max(b => b.Id) : 0;       //fix the error the id resets when starting a new program 
-        int lastMemberId = members.Count > 0 ? books.Max(b => b.Id) : 0;
+        int lastMemberId = members.Count > 0 ? members.Max(m => m.Id) : 0;
         Book.SetLastId(lastBookId);
         Member.SetLastId(lastMemberId);
     }
     
     public bool AddBook(Book newBook) {
-        bool bookAdded = false;
         foreach(Book book in books) {
             if(book.Isbn == newBook.Isbn) {
                 _notificationService.Notify($"Duplicate ISBN, {newBook.Title} cant be added!!!");
-                return bookAdded;
+                return false;
             }
         }
         books.Add(newBook);
-        //booksJsonHandler.AddItem(newBook);
         _booksJsonHandler.WriteListToFile(books);    //take the books list write to the json file as it is
-        bookAdded = true ;
         _notificationService.Notify($"{newBook.Title} added succesfully with id: {newBook.Id}");
-        return bookAdded ;
+        return true ;
     }
 
     public bool RemoveBook(int bookId) {
